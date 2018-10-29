@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import logo from './logo.svg';
-import './Assets/App.css';
+import './Assets/Login.css';
 
 //This is the main component that runs the app. 
 //We can use this page as a manager of all of our different pages
@@ -19,7 +19,7 @@ class App extends Component {
       <Router>
         <div>
         <body>
-          <div class = ""container>
+          <div class = "container">
             <div class = "wrapper">
               <div class = "name">
                 <h1>File_MasterXP</h1>
