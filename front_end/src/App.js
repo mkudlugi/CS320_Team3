@@ -8,6 +8,7 @@ import './Assets/App.css';
 
 //Import components here:
 import basic_comp from './Components/Basic_Comp';
+import mainPage from './Components/mainPage';
 
 class App extends Component {
   //Javascript functions go here:
@@ -21,6 +22,7 @@ class App extends Component {
         We can make external components to then add to this page:
         <Route exact path='/' component={basic_comp}/>
         <Route exact path='/' component={basic_comp}/>
+        <Route exact path='/mainPage' component={mainPage}/> {/*add /mainPage to display this*/}
         </div>
       </Router>
     );
