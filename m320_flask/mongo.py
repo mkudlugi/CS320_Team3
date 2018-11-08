@@ -21,12 +21,23 @@ def find_one_random():
 
 @app.route('/all', methods=['GET'])
 def find_all():
+  '''
+  Fetches all of the 5000+ JSON files from mongo 
+  '''
   cursor = collection.find({})
-  output = []
-  for s in cursor:
-    page_sanitized = json.loads(json_util.dumps(s))
-    output.append(page_sanitized)
+  if cursor.count() > 0:
+    output = []
+    for s in cursor:
+      page_sanitized = json.loads(json_util.dumps(s))
+      output.append(page_sanitized)
+  else:
+    return "Database is empty", 404
   return jsonify(output)
 
+"""@app.route('/tenants/?', methods=['GET']):
+def tenants():
+  query_params = request.args.get('tenants')
+  return jsonify([])
+"""
 if __name__ == '__main__':
     app.run()
