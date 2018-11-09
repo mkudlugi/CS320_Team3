@@ -13,6 +13,10 @@ client = MongoClient('localhost', 27017)
 db = client.TEST_1
 collection = db['320IMPORT']
 
+@application.route('/', methods=['GET'])
+def find():
+  return jsonify("YO THIS SHIT WORKS")
+
 @application.route('/oneRand', methods=['GET'])
 def find_one_random():
   cursor = collection.find_one({})  
