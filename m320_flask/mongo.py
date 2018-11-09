@@ -8,18 +8,18 @@ from flask_pymongo import PyMongo
 import json
 from bson import json_util, ObjectId
 
-app = Flask(__name__, template_folder = 'templates')
+application = Flask(__name__, template_folder = 'templates')
 client = MongoClient('localhost', 27017)
 db = client.TEST_1
 collection = db['320IMPORT']
 
-@app.route('/oneRand', methods=['GET'])
+@application.route('/oneRand', methods=['GET'])
 def find_one_random():
   cursor = collection.find_one({})  
   page_sanitized = json.loads(json_util.dumps(cursor))
   return jsonify(page_sanitized)
 
-@app.route('/all', methods=['GET'])
+@application.route('/all', methods=['GET'])
 def find_all():
   '''
   Fetches all of the 5000+ JSON files from mongo 
@@ -34,10 +34,11 @@ def find_all():
     return "Database is empty", 404
   return jsonify(output)
 
-"""@app.route('/tenants/?', methods=['GET']):
+"""@application.route('/tenants/?', methods=['GET']):
 def tenants():
   query_params = request.args.get('tenants')
   return jsonify([])
 """
 if __name__ == '__main__':
-    app.run()
+    application.debug = True
+    application.run()
