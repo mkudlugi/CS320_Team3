@@ -21,24 +21,26 @@ class MainPage extends Component {
             </tr>
         );
         
-        const Row = (val1, val2, val3) => (
+        const Row = ({serialNumberInserv, date, authorizedTenants}) => (
             <tr bgcolor = "Gainsboro">
-                <td>{'val1'}</td>
-                <td>{'val2'}</td>
-                <td>{'val3'}</td>
+                <td>{serialNumberInserv}</td>
+                <td>{date}</td>
+                <td>{authorizedTenants}</td>
                 <td> <input type = "checkbox" /> </td>
                 <td><img src="download icon.png" /></td>
             </tr>
         );
+
+        const jsonList = [];
         
         // This is the number of rows based on the data returned. This is just a temporary value
-        const rowNums = 10;
+        const rowNums = 50;
 
         const Rows = () => {
             const rows = [];
             for (let i = 0; i < rowNums; i++) {
                 // When parsing through the data, this is where you would pass in the values to be used in the Row
-                rows.push(<Row />);
+                rows.push(<Row serialNumberInserv='1' date='2' authorizedTenants='3'/>);
             }
             return rows;
         };
