@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
 import SearchBar from './SearchBar';
+import axios from 'axios';
 
 class MainPage extends Component {
     //Javascript functions go here:
+    state = {
+        jsonList: []
+    }
+
+    componentDidMount() {
+        axios.get(`http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/oneRand`)
+          .then(res => {
+            const jsonList = res.data;
+            this.setState({ jsonList });
+          })
+          .catch(error => {
+            console.log('Axios call failed');
+          })
+      }
 
     render() {
         const headers = [
@@ -31,14 +46,10 @@ class MainPage extends Component {
             </tr>
         );
 
-        const jsonList = [];
-        
-        // This is the number of rows based on the data returned. This is just a temporary value
-        const rowNums = 50;
-
         const Rows = () => {
             const rows = [];
-            for (let i = 0; i < rowNums; i++) {
+            console.log(this.state.jsonList.length);
+            for (let i = 0; i < this.state.jsonList.length; i++) {
                 // When parsing through the data, this is where you would pass in the values to be used in the Row
                 rows.push(<Row serialNumberInserv='1' date='2' authorizedTenants='3'/>);
             }
