@@ -8,11 +8,13 @@ class MainPage extends Component {
         jsonList: []
     }
 
+    //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
-        axios.get(`http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/oneRand`)
+        axios.get(`http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all`)
           .then(res => {
             const jsonList = res.data;
             this.setState({ jsonList });
+            console.log('Axios call Success')
           })
           .catch(error => {
             console.log('Axios call failed');
@@ -20,6 +22,7 @@ class MainPage extends Component {
       }
 
     render() {
+        //Headers for the main display table
         const headers = [
             'serialNumberInserv',
             'Date(YYY-MM-DDTHH:mm:ssZ)',
@@ -36,6 +39,7 @@ class MainPage extends Component {
             </tr>
         );
         
+        //Component that defines what each row of the table displays
         const Row = ({serialNumberInserv, date, authorizedTenants}) => (
             <tr bgcolor = "Gainsboro">
                 <td>{serialNumberInserv}</td>
@@ -46,12 +50,18 @@ class MainPage extends Component {
             </tr>
         );
 
+        //Component that collects all rows into an array to display in the table
         const Rows = () => {
             const rows = [];
-            console.log(this.state.jsonList.length);
+
             for (let i = 0; i < this.state.jsonList.length; i++) {
-                // When parsing through the data, this is where you would pass in the values to be used in the Row
-                rows.push(<Row serialNumberInserv='1' date='2' authorizedTenants='3'/>);
+                //Parses JSON object for corresponding data
+                const sni = this.state.jsonList[i].serialNumberInserv;
+                const d = this.state.jsonList[i].date;
+                const at = this.state.jsonList[i].authorized.tenants;
+
+                //Defines a row with the info from the current json object and adds it to the list of rows
+                rows.push(<Row serialNumberInserv={sni} date={d} authorizedTenants={at}/>);
             }
             return rows;
         };
