@@ -28,15 +28,25 @@ def find_all():
   '''
   Fetches all of the 5000+ JSON files from mongo 
   '''
-  cursor = collection.find({}).limit(10)
-  if cursor.count() > 0:
+  nPerPage = request.args.get('nPerPage')
+  if(nPerPage != None):
+    #pageNumber = request.args.get('pageNumber')
+    if int(nPerPage) < 1 : return "nPerPage must be greater than 0!", 400
     output = []
-    for s in cursor:
+    for s in collection.find({}).limit(int(nPerPage)):
       page_sanitized = json.loads(json_util.dumps(s))
       output.append(page_sanitized)
+    return jsonify(output)
   else:
-    return "Database is empty", 404
-  return jsonify(output)
+    cursor = collection.find({}).limit(50)
+    if cursor.count() > 0:
+      output = []
+      for s in cursor:
+        page_sanitized = json.loads(json_util.dumps(s))
+        output.append(page_sanitized)
+    else:
+      return "Database is empty", 404
+    return jsonify(output)
 
 @application.route('/tenants', methods=['GET'])
 def tenants():
