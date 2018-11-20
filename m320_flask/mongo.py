@@ -10,7 +10,7 @@ from bson import json_util, ObjectId
 from flask_cors import CORS, cross_origin
 
 application = Flask(__name__, template_folder = 'templates')
-client = MongoClient('ec2-18-212-37-169.compute-1.amazonaws.com', 27017)
+client = MongoClient('ec2-18-212-37-169.compute-1.amazonaws.com', username='AdminSid', password='scrumbledor', authMechanism='SCRAM-SHA-1')
 db = client.handler
 collection = db['handler_json']
 CORS(application)
