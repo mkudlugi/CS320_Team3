@@ -40,13 +40,13 @@ class MainPage extends Component {
         );
         
         //Component that defines what each row of the table displays
-        const Row = ({serialNumberInserv, date, authorizedTenants}) => (
+        const Row = ({serialNumberInserv, date, authorizedTenants, data}) => (
             <tr bgcolor = "Gainsboro">
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
                 <td>{authorizedTenants}</td>
                 <td> <input type = "checkbox" /> </td>
-                <td><img src="download icon.png" /></td>
+                <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
             </tr>
         );
 
@@ -59,9 +59,11 @@ class MainPage extends Component {
                 const sni = this.state.jsonList[i].serialNumberInserv;
                 const d = this.state.jsonList[i].date;
                 const at = this.state.jsonList[i].authorized.tenants;
+                const obj = this.state.jsonList[i];
+                var dat = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 
                 //Defines a row with the info from the current json object and adds it to the list of rows
-                rows.push(<Row serialNumberInserv={sni} date={d} authorizedTenants={at}/>);
+                rows.push(<Row serialNumberInserv={sni} date={d} authorizedTenants={at} data={dat}/>);
             }
             return rows;
         };
