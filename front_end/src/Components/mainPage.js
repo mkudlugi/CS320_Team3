@@ -5,15 +5,63 @@ import axios from 'axios';
 class MainPage extends Component {
     //Javascript functions go here:
     state = {
-        jsonList: []
+        jsonList: [],
+        page: 1
     }
+    
+    //Loads next 20 json elements
+    pageForward() {
+        console.log("This was clicked");
+        const jl = [];
+
+
+        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
+        var p = this.state.page;
+        p = p + 1;
+        this.setState({page: p})
+
+        axios.get(url)
+        .then(res => {
+            console.log('Axios call Success');
+            const jl = res.data;
+            this.setState({ jsonList: jl });
+            console.log(jl)
+        })
+        .catch(error => {
+            console.log('Axios call failed');
+        }) 
+    }
+
+    //Loads previous 20 json elements
+    pageBack() {
+        console.log("This was clicked");
+        const jl = [];
+
+
+        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
+        var p = this.state.page;
+        if(p > 0) p = p - 1
+        this.setState({page: p})
+
+        axios.get(url)
+        .then(res => {
+            console.log('Axios call Success');
+            const jl = res.data;
+            this.setState({ jsonList: jl });
+            console.log(jl)
+        })
+        .catch(error => {
+            console.log('Axios call failed');
+        }) 
+    }
+    
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
-        axios.get(`http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all`)
+        axios.get(`http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=0`)
           .then(res => {
-            const jsonList = res.data;
-            this.setState({ jsonList });
+            const jl = res.data;
+            this.setState({ jsonList: jl });
             console.log('Axios call Success')
           })
           .catch(error => {
@@ -89,8 +137,8 @@ class MainPage extends Component {
             <div class = "bottomIcon" align = "center">
                 <ul>
                     <li><a href="#"><img src="left icon.png" /></a></li>
-                    <li><a href="#">Go to First Page</a></li>
-                    <li><a href="#">Go to Last page</a></li>
+                    <li><a href="#" onClick={this.pageBack.bind(this)}>Previous Page</a></li>
+                    <li><a href="#" onClick={this.pageForward.bind(this)}>Next Page</a></li>
                     <li><a href="#"><img href ="#" src="right icon.png" /></a></li>
                 </ul>
             </div>
