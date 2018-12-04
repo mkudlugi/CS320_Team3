@@ -25,23 +25,23 @@ class MainPage extends Component {
         //Headers for the main display table
         const headers = [
             'serialNumberInserv',
-            'Date(YYY-MM-DDTHH:mm:ssZ)',
+            'Date(YYYY-MM-DDTHH:mm:ssZ)',
             'authorized tenants',
             'Select',
             'Download'
         ];
 
         const HeaderRow = () => (
-            <tr bgcolor ="Silver">
+            <thead class="thead-dark">
                 {headers.map(header => (
                     <th>{header}</th>
                 ))}
-            </tr>
+            </thead>
         );
         
         //Component that defines what each row of the table displays
         const Row = ({serialNumberInserv, date, authorizedTenants, data}) => (
-            <tr bgcolor = "Gainsboro">
+            <tr>
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
                 <td>{authorizedTenants}</td>
@@ -69,25 +69,32 @@ class MainPage extends Component {
         };
 
     return(
-        <div>
+        <div class="container-fluid">
             <link rel="stylesheet" href="style.css" />
-            <p >File_MasterXP</p> <button>Log Out</button>
+            <div class="row align-items-center h-100">
+                <div class="col-md-8">
+                    <h2>File_MasterXP</h2> 
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-secondary float-right">Log Out</button>
+                </div>
+            </div>
+
             <hr/>
 
             <SearchBar />
 
-            <br/>
 
-            <div class = "table"> 
-                <table  width="90%" border="1" 
-                cellpadding="10"
-                align="center">
+            <div> 
+                <table class="table table-striped">
                     <HeaderRow />
-                    <Rows />
+                    <tbody>
+                        <Rows />
+                    </tbody> 
                 </table>
             </div>
             <div class = "bottomIcon" align = "center">
-                <ul>
+                <ul class="pages">
                     <li><a href="#"><img src="left icon.png" /></a></li>
                     <li><a href="#">Go to First Page</a></li>
                     <li><a href="#">Go to Last page</a></li>
