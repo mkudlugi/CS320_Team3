@@ -55,6 +55,41 @@ class MainPage extends Component {
         }) 
     }
     
+    constructor(props) {
+        super(props);
+        this.state = {
+            jsonList: [],
+        }
+        this.selectAll = this.selectAll.bind(this);
+        this.unselectAll = this.unselectAll.bind(this);
+    }
+    
+
+    selectAll(e) {
+        e.preventDefault();
+        var allInputs = document.getElementsByTagName("input");
+        for (var i = 0, max = allInputs.length; i < max; i++) {
+            if (allInputs[i].type === 'checkbox')
+                allInputs[i].checked = true;
+        }
+    }
+
+unselectAll(e) {
+    e.preventDefault();
+    var allInputs = document.getElementsByTagName("input");
+    for (var i = 0, max = allInputs.length; i < max; i++) {
+        if (allInputs[i].type === 'checkbox')
+            allInputs[i].checked = false;
+}   
+}
+    downloadSelected() {
+    if(this.checked){
+        console.log("this is checked");
+    }
+    else{
+        console.log("this is not checked");
+    }
+}
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
@@ -67,6 +102,11 @@ class MainPage extends Component {
           .catch(error => {
             console.log('Axios call failed');
           })
+      }
+
+      checkIfChecked() {
+        document.getElementById("select-all")
+        
       }
 
     render() {
@@ -82,6 +122,8 @@ class MainPage extends Component {
         const HeaderRow = () => (
             <thead class="thead-dark">
                 {headers.map(header => (
+                    header === 'Select' ? 
+                    <th>{header}</th> : //<input id='select-all' type = "checkbox" onChange={this.checkIfChecked() ? this.selectAll : this.unselectAll} />
                     <th>{header}</th>
                 ))}
             </thead>
@@ -130,7 +172,10 @@ class MainPage extends Component {
 
             <hr/>
 
-            <SearchBar />
+            <SearchBar 
+                selectAll={this.selectAll} 
+                unselectAll={this.unselectAll}
+            />
 
 
             <div> 
