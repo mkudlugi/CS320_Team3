@@ -24,7 +24,6 @@ client = MongoClient('localhost', 27017)
 db = client.handler
 collection = db['handler_json'] #This is the collection name
 auth = db['auth']# This is the user auth collection
-
 #The two lines below define the CORS headers. Make sure to include the line @cross_origin for new routes
 #otherwise you will have CORS issues on all new browsers! THIS IS VERY IMPORTANT!
 CORS(application)
@@ -49,37 +48,35 @@ def login_required(method):
         return method(self, user)
     return wrapper
 
-@application.route('/register')
-@cross_origin()
-def register():
-    email = request.args.get('email')
-    password = request.args.get('password')
-    if not re.match(r'^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$', email):
-        abort(400, message='email is not valid.')
-    if auth.find({'email': email}).count() != 0:
-        if auth.find_one({'email': email})['active'] == True:
-            abort(400, message='email is alread used.')
-    else:
-        auth.insert_one({'email': email, 'password': generate_password_hash(password), 'active': False})
-    exp = datetime.datetime.utcnow() + datetime.timedelta(days=1)
-    encoded = jwt.encode({'email': email, 'exp': exp},
-                         'secret', algorithm='HS256') 
-    return jsonify({'email': email})
+class Register(Resource):
+  def register():
+      email = request.json['email']
+      password = request.json['password']
+      if not re.match(r'^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$', email):
+          abort(400, message='email is not valid.')
+      if auth.find({'email': email}).count() != 0:
+          if auth.find_one({'email': email})['active'] == True:
+              abort(400, message='email is alread used.')
+      else:
+          auth.insert_one({'email': email, 'password': generate_password_hash(password), 'active': False})
+      exp = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+      encoded = jwt.encode({'email': email, 'exp': exp},
+                           'secret', algorithm='HS256') 
+      return jsonify({'email': email})
 
-@application.route('/login')
-@cross_origin()
-def login():
-    email = request.args.get('email')
-    password = request.args.get('password')
-    if auth.find({'email': email}).count() == 0:
-        abort(400, message='User is not found.')
-    user = auth.find_one({'email': email})
-    if not check_password_hash(user['password'], password):
-        abort(400, message='Password is incorrect.')
-    exp = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-    encoded = jwt.encode({'email': email, 'exp': exp},
-                         'secret', algorithm='HS256')
-    return jsonify({'email': email, 'token': encoded.decode('utf-8')})
+class Login(Resource):
+  def login():
+      email = request.json['email']
+      password = request.json['password']
+      if auth.find({'email': email}).count() == 0:
+          abort(400, message='User is not found.')
+      user = auth.find_one({'email': email})
+      if not check_password_hash(user['password'], password):
+          abort(400, message='Password is incorrect.')
+      exp = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+      encoded = jwt.encode({'email': email, 'exp': exp},
+                           'secret', algorithm='HS256')
+      return jsonify({'email': email, 'token': encoded.decode('utf-8')})
 
 #Default route for a html document, specified by index.html
 @application.route('/dashboard')
@@ -95,14 +92,14 @@ def find():
 
 #Displays a random document, usually the first one.
 #Example http://IPADDRESS/oneRand
-@application.route('/oneRand', methods=['GET'])
-@cross_origin()
-def find_one_random():
-  #cursor is the mongodb query
-  cursor = collection.find_one({})  
-  #page_sanitized makes the return value a valid json. INCLUDE THIS LINE BEFORE YOU RETURN A JSON FILE!
-  page_sanitized = json.loads(json_util.dumps(cursor))
-  return jsonify(page_sanitized)
+class oneRand(Resource):
+  @login_required
+  def find_one_random():
+    #cursor is the mongodb query
+    cursor = collection.find_one({})  
+    #page_sanitized makes the return value a valid json. INCLUDE THIS LINE BEFORE YOU RETURN A JSON FILE!
+    page_sanitized = json.loads(json_util.dumps(cursor))
+    return jsonify(page_sanitized)
 
 #This returns all the documents if no parameters are entered
 #Otherwise if nPerPage and pageNumber are included it returns paged documents.
@@ -234,6 +231,9 @@ def search():
   if(len(output) == 0): return "No results found!", 400
   return jsonify(output)
 
+api.add_resource(Register, '/register')
+api.add_resource(Login, '/login')
+api.add_resource(oneRand, '/oneRand')
 #Disable debug for production release!!!!!!!!
 #application.debug = False, otherwise users have access to source code!
 if __name__ == '__main__':
