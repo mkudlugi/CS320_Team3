@@ -13,10 +13,11 @@ class SearchBar extends Component {
                     <li class="nav-item">
                     <label onClick = {this.props.selectAll} class="btn btn-secondary">Select All </label>
                     <label onClick = {this.props.unselectAll} class="btn btn-secondary">Unselect All </label>
+                    <label onClick = {this.props.downloadSelected} class="btn btn-secondary">Downaload Selected </label>
                     </li>
-                    <li class="nav-item">
+                    {/* <li class="nav-item">
                         <a class="nav-link" href="#">Download</a>
-                    </li>
+                    </li> */}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Options
