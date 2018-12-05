@@ -72,7 +72,7 @@ unselectAll(e) {
             <thead class="thead-dark">
                 {headers.map(header => (
                     header === 'Select' ? 
-                    <th>{header}<input id='select-all' type = "checkbox" onChange={this.checkIfChecked() ? this.selectAll : this.unselectAll} /></th> : 
+                    <th>{header}</th> : //<input id='select-all' type = "checkbox" onChange={this.checkIfChecked() ? this.selectAll : this.unselectAll} />
                     <th>{header}</th>
                 ))}
             </thead>
