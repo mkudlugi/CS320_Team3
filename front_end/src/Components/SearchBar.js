@@ -8,15 +8,31 @@ class SearchBar extends Component {
 
     render() {
         return (
-        <form>
-            <input type="text" />
-            <button onClick = {this.downloadSelected}>Download Selected</button>
-            <button onClick = {this.props.selectAll}>Select All</button>
-            <button onClick = {this.props.unselectAll}>Unselect All</button>
-            <select>
-                <option>Option</option>
-            </select>
-        </form>
+            <nav class="navbar navbar-light bg-light navbar-expand-lg">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                    <label class="btn btn-secondary">Select All <input type="checkbox" class="select" autocomplete="off"/></label>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Download</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Options
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Option</a>
+                        <a class="dropdown-item" href="#">Another option</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"></input>
+                    <button class="btn my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </nav>
         )
     }
 }
