@@ -30,6 +30,57 @@ auth = db['auth']# This is the user auth collection
 CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'
 
+#Login system 
+def login_required(method):
+    @functools.wraps(method)
+    def wrapper(self):
+        header = request.headers.get('Authorization')
+        _, token = header.split()
+        try:
+            decoded = jwt.decode(token, app.config['KEY'], algorithms='HS256')
+        except jwt.DecodeError:
+            abort(400, message='Token is not valid.')
+        except jwt.ExpiredSignatureError:
+            abort(400, message='Token is expired.')
+        email = decoded['email']
+        if auth.find({'email': email}).count() == 0:
+            abort(400, message='User is not found.')
+        user = auth.find_one({'email': email})
+        return method(self, user)
+    return wrapper
+
+@application.route('/register')
+@cross_origin()
+def register():
+    email = request.args.get('email')
+    password = request.args.get('password')
+    if not re.match(r'^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$', email):
+        abort(400, message='email is not valid.')
+    if auth.find({'email': email}).count() != 0:
+        if auth.find_one({'email': email})['active'] == True:
+            abort(400, message='email is alread used.')
+    else:
+        auth.insert_one({'email': email, 'password': generate_password_hash(password), 'active': False})
+    exp = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+    encoded = jwt.encode({'email': email, 'exp': exp},
+                         'secret', algorithm='HS256') 
+    return jsonify({'email': email})
+
+@application.route('/login')
+@cross_origin()
+def login():
+    email = request.args.get('email')
+    password = request.args.get('password')
+    if auth.find({'email': email}).count() == 0:
+        abort(400, message='User is not found.')
+    user = auth.find_one({'email': email})
+    if not check_password_hash(user['password'], password):
+        abort(400, message='Password is incorrect.')
+    exp = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+    encoded = jwt.encode({'email': email, 'exp': exp},
+                         'secret', algorithm='HS256')
+    return jsonify({'email': email, 'token': encoded.decode('utf-8')})
+
 #Default route for a html document, specified by index.html
 @application.route('/dashboard')
 @cross_origin()
@@ -182,71 +233,6 @@ def search():
     output.append(page_sanitized)
   if(len(output) == 0): return "No results found!", 400
   return jsonify(output)
-#Login system 
-def login_required(method):
-    @functools.wraps(method)
-    def wrapper(self):
-        header = request.headers.get('Authorization')
-        _, token = header.split()
-        try:
-            decoded = jwt.decode(token, app.config['KEY'], algorithms='HS256')
-        except jwt.DecodeError:
-            abort(400, message='Token is not valid.')
-        except jwt.ExpiredSignatureError:
-            abort(400, message='Token is expired.')
-        email = decoded['email']
-        if auth.find({'email': email}).count() == 0:
-            abort(400, message='User is not found.')
-        user = auth.find_one({'email': email})
-        return method(self, user)
-    return wrapper
-
-class Register(Resource):
-    def post(self):
-        email = request.json['email']
-        password = request.json['password']
-        if not re.match(r'^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$', email):
-            abort(400, message='email is not valid.')
-        if auth.find({'email': email}).count() != 0:
-            if auth.find_one({'email': email})['active'] == True:
-                abort(400, message='email is alread used.')
-        else:
-            auth.insert_one({'email': email, 'password': generate_password_hash(password), 'active': False})
-        exp = datetime.datetime.utcnow() + datetime.timedelta(days=app.config['ACTIVATION_EXPIRE_DAYS'])
-        encoded = jwt.encode({'email': email, 'exp': exp},
-                             app.config['KEY'], algorithm='HS256') 
-        return {'email': email}
-
-class Activate(Resource):
-    def put(self):
-        activation_code = request.json['activation_code']
-        try:
-            decoded = jwt.decode(activation_code, app.config['KEY'], algorithms='HS256')
-        except jwt.DecodeError:
-            abort(400, message='Activation code is not valid.')
-        except jwt.ExpiredSignatureError:
-            abort(400, message='Activation code is expired.')
-        email = decoded['email']
-        auth.update({'email': email}, {'$set': {'active': True}})
-        return {'email': email}
-
-class Login(Resource):
-    def get(self):
-        email = request.json['email']
-        password = request.json['password']
-        if auth.find({'email': email}).count() == 0:
-            abort(400, message='User is not found.')
-        user = auth.find_one({'email': email})
-        if not check_password_hash(user['password'], password):
-            abort(400, message='Password is incorrect.')
-        exp = datetime.datetime.utcnow() + datetime.timedelta(hours=app.config['TOKEN_EXPIRE_HOURS'])
-        encoded = jwt.encode({'email': email, 'exp': exp},
-                             app.config['KEY'], algorithm='HS256')
-        return {'email': email, 'token': encoded.decode('utf-8')}
-
-api.add_resource(Register, '/register')
-api.add_resource(Activate, '/activate')
-api.add_resource(Login, '/login')
 
 #Disable debug for production release!!!!!!!!
 #application.debug = False, otherwise users have access to source code!
