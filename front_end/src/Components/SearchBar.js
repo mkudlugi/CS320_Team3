@@ -3,12 +3,16 @@ import React, { Component } from 'react';
 class SearchBar extends Component {
     //Javascript functions go here:
 
+
+
+
     render() {
         return (
             <nav class="navbar navbar-light bg-light navbar-expand-lg">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                    <label class="btn btn-secondary">Select All <input type="checkbox" class="select" autocomplete="off"/></label>
+                    <label onClick = {this.props.selectAll} class="btn btn-secondary">Select All </label>
+                    <label onClick = {this.props.unselectAll} class="btn btn-secondary">Unselect All </label>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Download</a>
