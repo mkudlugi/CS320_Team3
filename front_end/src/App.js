@@ -18,10 +18,7 @@ class App extends Component {
   
       <Router>
         <div>
-        We can make external components to then add to this page:
-        <Route exact path='/' component={basic_comp}/>
-        <Route exact path='/' component={basic_comp}/>
-        <Route exact path='/mainPage' component={MainPage}/> {/*add /mainPage to display this*/}
+        <Route exact path='/' component={MainPage}/> {/*add /mainPage to display this*/}
         </div>
       </Router>
     );
