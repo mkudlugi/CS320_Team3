@@ -12,11 +12,39 @@ class MainPage extends Component {
         }
         this.selectAll = this.selectAll.bind(this);
         this.unselectAll = this.unselectAll.bind(this);
+        this.onSearchClick = this.onSearchClick.bind(this);
+    }
+
+    onSearchClick(){
+        const searchOptionValue = document.getElementById("navbarDropdown").value;
+        console.log(searchOptionValue);
+        const searchInputValue = document.getElementById("searchInput").value;
+        console.log(searchInputValue);
+
+        //this.setState({page: 1})
+
+        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/";
+        if(searchOptionValue === "all") url += "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
+        else if(searchOptionValue === "tenant") url += "tenants?tenants=" + searchInputValue;
+        else url += "serial?num=" + searchInputValue;
+
+        console.log(url);
+
+        axios.get(url)
+        .then(res => {
+            console.log('onSearchCLick Axios call Success');
+            const jl = res.data;
+            this.setState({ jsonList: jl });
+            console.log(this.state.page)
+        })
+        .catch(error => {
+            console.log('onSearchCLick Axios call failed');
+        }) 
     }
 
     //Loads next 20 json elements
     pageForward() {
-        console.log("This was clicked");
+        console.log("Forward button clicked");
         const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
         var p = this.state.page;
         p = p + 1;
@@ -36,7 +64,7 @@ class MainPage extends Component {
 
     //Loads previous 20 json elements
     pageBack() {
-        console.log("This was clicked");
+        console.log("Back button clicked");
         const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
         var p = this.state.page;
         if(p > 0) p = p - 1
@@ -165,6 +193,7 @@ unselectAll(e) {
             <SearchBar 
                 selectAll={this.selectAll} 
                 unselectAll={this.unselectAll}
+                onSearchClick={this.onSearchClick}
             />
 
 
@@ -178,7 +207,7 @@ unselectAll(e) {
             </div>
             <div class = "bottomIcon" align = "center">
                 <ul class="pages">
-                    <li><a href="#"><img src="left icon.png" /></a></li>
+                    <li><a href="#" onClick={this.onSearchClick.bind(this)}><img src="left icon.png" /></a></li>
                     <li><a href="#" onClick={this.pageBack.bind(this)}>Previous Page</a></li>
                     <li><a href="#" onClick={this.pageForward.bind(this)}>Next Page</a></li>
                     <li><a href="#"><img href ="#" src="right icon.png" /></a></li>
