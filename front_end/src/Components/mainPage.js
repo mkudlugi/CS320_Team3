@@ -101,12 +101,12 @@ unselectAll(e) {
 }   
 }
     downloadSelected() {
-    if(this.checked){
-        console.log("this is checked");
-    }
-    else{
-        console.log("this is not checked");
-    }
+    // e.preventDefault();
+    // var allSelected = document.getElementsByTagName("input");
+    // for(var i = 0,max = allSelected.length;i<max;i++){
+    //     if(allSelected[i].type === 'checkbox' && allSelected[i].checked ===true)
+    //     //download
+    //}
 }
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
@@ -122,10 +122,10 @@ unselectAll(e) {
           })
       }
 
-      checkIfChecked() {
-        document.getElementById("select-all")
+    //   checkIfChecked() {
+    //     document.getElementById("select-all")
         
-      }
+    //   }
 
     render() {
         //Headers for the main display table
