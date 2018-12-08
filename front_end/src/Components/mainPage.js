@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import axios from 'axios';
 
+var selected_json = []
+function downloadAll_array(elem, thing){ //doesn't work
+    
+    if(thing.checked == true) selected_json.push(elem)
+}
+
 class MainPage extends Component {
     //Javascript functions go here:
     constructor(props) {
@@ -12,6 +18,7 @@ class MainPage extends Component {
         }
         this.selectAll = this.selectAll.bind(this);
         this.unselectAll = this.unselectAll.bind(this);
+        this.downloadSelected = this.downloadSelected.bind(this)
     }
 
     //Loads next 20 json elements
@@ -54,7 +61,6 @@ class MainPage extends Component {
         }) 
     }
     
-
     selectAll(e) {
         e.preventDefault();
         var allInputs = document.getElementsByTagName("input");
@@ -72,7 +78,11 @@ unselectAll(e) {
             allInputs[i].checked = false;
 }   
 }
-    downloadSelected() {
+    downloadSelected(e) {
+        e.preventDefault();
+        return selected_json
+        // what to return in order to show download window?
+    
     // e.preventDefault();
     // var allSelected = document.getElementsByTagName("input");
     // for(var i = 0,max = allSelected.length;i<max;i++){
@@ -125,7 +135,7 @@ unselectAll(e) {
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
                 <td>{authorizedTenants}</td>
-                <td> <input type = "checkbox" /> </td>
+                <td> <input type = "checkbox" value = {serialNumberInserv} onchange={downloadAll_array(data, this)}/> </td>
                 <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
             </tr>
         );
@@ -165,6 +175,7 @@ unselectAll(e) {
             <SearchBar 
                 selectAll={this.selectAll} 
                 unselectAll={this.unselectAll}
+                downloadSelected={this.downloadSelected}
             />
 
 
