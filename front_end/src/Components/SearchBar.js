@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import return_selected from './mainPage.js'
+
 
 class SearchBar extends Component {
     //Javascript functions go here:
-
 
 
 
@@ -13,7 +14,7 @@ class SearchBar extends Component {
                     <li class="nav-item">
                     <label onClick = {this.props.selectAll} class="btn btn-secondary">Select All </label>
                     <label onClick = {this.props.unselectAll} class="btn btn-secondary">Unselect All </label>
-                    <label onClick = {this.props.downloadSelected} class="btn btn-secondary">Downaload Selected </label>
+                    <label onClick = {this.props.downloadSelected} class="btn btn-secondary">Download Selected </label>
                     </li>
                     {/* <li class="nav-item">
                         <a class="nav-link" href="#">Download</a>
