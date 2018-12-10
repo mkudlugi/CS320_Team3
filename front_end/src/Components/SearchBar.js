@@ -11,11 +11,6 @@ class SearchBar extends Component {
         return (
             <nav class="navbar navbar-light bg-light navbar-expand-lg">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                    <label onClick = {this.props.selectAll} class="btn btn-secondary">Select All </label>
-                    <label onClick = {this.props.unselectAll} class="btn btn-secondary">Unselect All </label>
-                    <label onClick = {this.props.downloadSelected} class="btn btn-secondary">Download Selected </label>
-                    </li>
                     {/* <li class="nav-item">
                         <a class="nav-link" href="#">Download</a>
                     </li> */}
