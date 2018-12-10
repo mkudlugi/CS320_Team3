@@ -59,9 +59,78 @@ class MainPage extends Component {
         super(props);
         this.state = {
             jsonList: [],
+            page: 1
         }
         this.selectAll = this.selectAll.bind(this);
         this.unselectAll = this.unselectAll.bind(this);
+        this.onSearchClick = this.onSearchClick.bind(this);
+    }
+
+    onSearchClick(){
+        const searchOptionValue = document.getElementById("navbarDropdown").value;
+        console.log(searchOptionValue);
+        const searchInputValue = document.getElementById("searchInput").value;
+        console.log(searchInputValue);
+
+        //this.setState({page: 1})
+
+        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/";
+        if(searchOptionValue === "all") url += "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
+        else if(searchOptionValue === "tenant") url += "tenants?tenants=" + searchInputValue;
+        else url += "serial?num=" + searchInputValue;
+
+        console.log(url);
+
+        axios.get(url)
+        .then(res => {
+            console.log('onSearchCLick Axios call Success');
+            const jl = res.data;
+            this.setState({ jsonList: jl });
+            console.log(this.state.page)
+        })
+        .catch(error => {
+            console.log('onSearchCLick Axios call failed');
+        }) 
+    }
+
+    //Loads next 20 json elements
+    pageForward() {
+        console.log("Forward button clicked");
+        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
+        var p = this.state.page;
+        p = p + 1;
+        this.setState({page: p})
+
+        axios.get(url)
+        .then(res => {
+            console.log('Axios call Success');
+            const jl = res.data;
+            this.setState({ jsonList: jl });
+            console.log(this.state.page)
+        })
+        .catch(error => {
+            console.log('Axios call failed');
+        }) 
+    }
+
+    //Loads previous 20 json elements
+    pageBack() {
+        console.log("Back button clicked");
+        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
+        var p = this.state.page;
+        if(p > 0) p = p - 1
+        this.setState({page: p})
+
+        axios.get(url)
+        .then(res => {
+            console.log('Axios call Success');
+            const jl = res.data;
+            this.setState({ jsonList: jl });
+            console.log(this.state.page)
+        })
+        .catch(error => {
+            console.log('Axios call failed');
+        }) 
     }
     
 
@@ -83,17 +152,17 @@ unselectAll(e) {
 }   
 }
     downloadSelected() {
-    if(this.checked){
-        console.log("this is checked");
-    }
-    else{
-        console.log("this is not checked");
-    }
+    // e.preventDefault();
+    // var allSelected = document.getElementsByTagName("input");
+    // for(var i = 0,max = allSelected.length;i<max;i++){
+    //     if(allSelected[i].type === 'checkbox' && allSelected[i].checked ===true)
+    //     //download
+    //}
 }
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
-        axios.get(`http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=0`)
+        axios.get("http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=0")
           .then(res => {
             const jl = res.data;
             this.setState({ jsonList: jl });
@@ -104,10 +173,10 @@ unselectAll(e) {
           })
       }
 
-      checkIfChecked() {
-        document.getElementById("select-all")
+    //   checkIfChecked() {
+    //     document.getElementById("select-all")
         
-      }
+    //   }
 
     render() {
         //Headers for the main display table
@@ -175,6 +244,7 @@ unselectAll(e) {
             <SearchBar 
                 selectAll={this.selectAll} 
                 unselectAll={this.unselectAll}
+                onSearchClick={this.onSearchClick}
             />
 
 
