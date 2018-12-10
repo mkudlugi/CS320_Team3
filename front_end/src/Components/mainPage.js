@@ -258,10 +258,8 @@ unselectAll(e) {
             </div>
             <div class = "bottomIcon" align = "center">
                 <ul class="pages">
-                    <li><a href="#"><img src="left icon.png" /></a></li>
-                    <li><a href="#" onClick={this.pageBack.bind(this)}>Previous Page</a></li>
-                    <li><a href="#" onClick={this.pageForward.bind(this)}>Next Page</a></li>
-                    <li><a href="#"><img href ="#" src="right icon.png" /></a></li>
+                    <a href="#" onClick={this.pageBack.bind(this)}>Previous Page</a><br></br>
+                    <a href="#" onClick={this.pageForward.bind(this)}>Next Page</a>
                 </ul>
             </div>
         </div>
