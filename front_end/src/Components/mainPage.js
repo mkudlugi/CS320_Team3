@@ -6,7 +6,7 @@ class MainPage extends Component {
     //Javascript functions go here:
     state = {
         jsonList: [],
-        page: 1
+        page: 0
     }
     
     //Loads next 20 json elements
