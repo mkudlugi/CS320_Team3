@@ -6,64 +6,16 @@ class MainPage extends Component {
     //Javascript functions go here:
     state = {
         jsonList: [],
-        page: 0
+        page: 0,
+        total: 0
     }
-    
-    //Loads next 20 json elements
-    pageForward() {
-        console.log("This was clicked");
-        const jl = [];
-
-
-        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
-        var p = this.state.page;
-        p = p + 1;
-        this.setState({page: p})
-
-        axios.get(url)
-        .then(res => {
-            console.log('Axios call Success');
-            const jl = res.data;
-            this.setState({ jsonList: jl });
-            console.log(jl)
-        })
-        .catch(error => {
-            console.log('Axios call failed');
-        }) 
-    }
-
-    //Loads previous 20 json elements
-    pageBack() {
-        console.log("This was clicked");
-        const jl = [];
-
-
-        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
-        var p = this.state.page;
-        if(p > 0) p = p - 1
-        this.setState({page: p})
-
-        axios.get(url)
-        .then(res => {
-            console.log('Axios call Success');
-            const jl = res.data;
-            this.setState({ jsonList: jl });
-            console.log(jl)
-        })
-        .catch(error => {
-            console.log('Axios call failed');
-        }) 
-    }
-    
     constructor(props) {
         super(props);
         this.state = {
             jsonList: [],
-            page: 1
+            page: 0
         }
-        this.selectAll = this.selectAll.bind(this);
-        this.unselectAll = this.unselectAll.bind(this);
-        this.onSearchClick = this.onSearchClick.bind(this);
+        this.toggleAll = this.toggleAll.bind(this);
     }
 
     onSearchClick(){
@@ -72,9 +24,9 @@ class MainPage extends Component {
         const searchInputValue = document.getElementById("searchInput").value;
         console.log(searchInputValue);
 
-        //this.setState({page: 1})
+        this.setState({page: 0})
 
-        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/";
+        var url = process.env.REACT_APP_API_URL;
         if(searchOptionValue === "all") url += "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
         else if(searchOptionValue === "tenant") url += "tenants?tenants=" + searchInputValue;
         else url += "serial?num=" + searchInputValue;
@@ -84,9 +36,9 @@ class MainPage extends Component {
         axios.get(url)
         .then(res => {
             console.log('onSearchCLick Axios call Success');
-            const jl = res.data;
-            this.setState({ jsonList: jl });
-            console.log(this.state.page)
+            const jl = res.data.items;
+            this.setState({ jsonList: jl, total: res.data.total });
+            console.log(this.state.total)
         })
         .catch(error => {
             console.log('onSearchCLick Axios call failed');
@@ -96,16 +48,14 @@ class MainPage extends Component {
     //Loads next 20 json elements
     pageForward() {
         console.log("Forward button clicked");
-        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
-        var p = this.state.page;
-        p = p + 1;
-        this.setState({page: p})
-
+        let page = this.state.page + 1;
+        const url = process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber=" + page;
+        this.setState({page: page})
         axios.get(url)
         .then(res => {
             console.log('Axios call Success');
-            const jl = res.data;
-            this.setState({ jsonList: jl });
+            const jl = res.data.items;
+            this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.page)
         })
         .catch(error => {
@@ -116,16 +66,15 @@ class MainPage extends Component {
     //Loads previous 20 json elements
     pageBack() {
         console.log("Back button clicked");
-        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page);
-        var p = this.state.page;
-        if(p > 0) p = p - 1
-        this.setState({page: p})
+        let page = this.state.page - (this.state.page > 0);
+        const url = process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber=" + page;
+        this.setState({page: page})
 
         axios.get(url)
         .then(res => {
             console.log('Axios call Success');
-            const jl = res.data;
-            this.setState({ jsonList: jl });
+            const jl = res.data.items;
+            this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.page)
         })
         .catch(error => {
@@ -133,39 +82,34 @@ class MainPage extends Component {
         }) 
     }
     
-
-    selectAll(e) {
+    toggled = true;
+    toggleAll(e) {
         e.preventDefault();
         var allInputs = document.getElementsByTagName("input");
         for (var i = 0, max = allInputs.length; i < max; i++) {
             if (allInputs[i].type === 'checkbox')
-                allInputs[i].checked = true;
+                allInputs[i].checked = this.toggled;
         }
+        this.toggled = !this.toggled;
+
     }
 
-unselectAll(e) {
+    downloadSelected(e) {
     e.preventDefault();
-    var allInputs = document.getElementsByTagName("input");
-    for (var i = 0, max = allInputs.length; i < max; i++) {
-        if (allInputs[i].type === 'checkbox')
-            allInputs[i].checked = false;
-}   
-}
-    downloadSelected() {
-    // e.preventDefault();
-    // var allSelected = document.getElementsByTagName("input");
-    // for(var i = 0,max = allSelected.length;i<max;i++){
-    //     if(allSelected[i].type === 'checkbox' && allSelected[i].checked ===true)
-    //     //download
-    //}
+    var allSelected = document.getElementsByTagName("input");
+    for(var i = 0,max = allSelected.length;i<max;i++){
+        if(allSelected[i].type === 'checkbox' && allSelected[i].checked ===true)
+            allSelected[i].parentElement.parentElement.childNodes[4].childNodes[0].click()
+    }
 }
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
-        axios.get("http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=0")
+        axios.get(process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber="+this.state.page)
           .then(res => {
-            const jl = res.data;
-            this.setState({ jsonList: jl });
+            const jl = res.data.items;
+            console.log(this.state.page)
+            this.setState({ jsonList: jl, total: res.data.total });
             console.log('Axios call Success')
           })
           .catch(error => {
@@ -232,7 +176,7 @@ unselectAll(e) {
             <link rel="stylesheet" href="style.css" />
             <div class="row align-items-center h-100">
                 <div class="col-md-8">
-                    <h2>File_MasterXP</h2> 
+                    <h2>File_MasterXP</h2>
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-secondary float-right">Log Out</button>
@@ -241,10 +185,14 @@ unselectAll(e) {
 
             <hr/>
 
+            <h5 class="ml-2">{(this.state.page * 20) + 1}-{(Math.floor(this.state.total / 20) === this.state.page) ? this.state.total : this.state.page * 20 + 20} of {this.state.total}</h5>
+
             <SearchBar 
                 selectAll={this.selectAll} 
                 unselectAll={this.unselectAll}
                 onSearchClick={this.onSearchClick}
+                downloadSelected={this.downloadSelected}
+                toggleAll={this.toggleAll}
             />
 
 
@@ -256,12 +204,16 @@ unselectAll(e) {
                     </tbody> 
                 </table>
             </div>
+            <br></br>
+
             <div class = "bottomIcon" align = "center">
                 <ul class="pages">
-                    <a href="#" onClick={this.pageBack.bind(this)}>Previous Page</a><br></br>
-                    <a href="#" onClick={this.pageForward.bind(this)}>Next Page</a>
+                    {(this.state.page > 0) ? <a href="#" class="m-2" onClick={this.pageBack.bind(this)}>Prev.</a> : null }
+                    <b class="m-2">{this.state.page + 1}</b>
+                    {(this.state.page < this.state.total/20 - 1) ? <a href="#" class="m-2" onClick={this.pageForward.bind(this)}>Next</a> : null }
                 </ul>
             </div>
+            
         </div>
         );
     }
