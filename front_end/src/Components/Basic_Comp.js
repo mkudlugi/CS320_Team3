@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+            
 class Basic_Comp extends Component {
     //Javascript functions go here:
 

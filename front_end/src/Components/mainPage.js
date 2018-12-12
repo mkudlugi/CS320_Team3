@@ -16,9 +16,11 @@ class MainPage extends Component {
             page: 0
         }
         this.toggleAll = this.toggleAll.bind(this);
+        this.onSearchClick = this.onSearchClick.bind(this);
     }
 
-    onSearchClick(){
+    onSearchClick(e){
+        e.preventDefault();
         const searchOptionValue = document.getElementById("navbarDropdown").value;
         console.log(searchOptionValue);
         const searchInputValue = document.getElementById("searchInput").value;
@@ -38,7 +40,7 @@ class MainPage extends Component {
             console.log('onSearchCLick Axios call Success');
             const jl = res.data.items;
             this.setState({ jsonList: jl, total: res.data.total });
-            console.log(this.state.total)
+            console.log(this.state)
         })
         .catch(error => {
             console.log('onSearchCLick Axios call failed');
