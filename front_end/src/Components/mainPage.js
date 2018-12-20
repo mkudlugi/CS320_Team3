@@ -102,7 +102,6 @@ class MainPage extends Component {
             allSelected[i].parentElement.parentElement.childNodes[4].childNodes[0].click()
     }
 }
-
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
         axios.get("http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber="+this.state.page)
@@ -116,12 +115,7 @@ class MainPage extends Component {
             console.log('Axios call failed');
           })
       }
-
-    //   checkIfChecked() {
-    //     document.getElementById("select-all")
-        
-    //   }
-
+      
     render() {
         //Headers for the main display table
         const headers = [
@@ -149,14 +143,6 @@ class MainPage extends Component {
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
                 <td>{companyName}</td>
-                {
-                    function makeCapRed() {
-                        //if(capacity < 30.0){
-                            capacity = capacity.fontcolor("red");
-                            
-                        //}
-                    }
-                }
                 <td>{capacity}</td>
                 <td> <input type = "checkbox" /> </td>
                 <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
