@@ -122,6 +122,12 @@ class MainPage extends Component {
         
     //   }
 
+    makeRed(capacity) {
+        return (
+            <font color = "red">{capacity}</font>
+        )
+    }
+
     render() {
         //Headers for the main display table
         const headers = [
@@ -149,14 +155,6 @@ class MainPage extends Component {
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
                 <td>{companyName}</td>
-                {
-                    function makeCapRed() {
-                        //if(capacity < 30.0){
-                            capacity = capacity.fontcolor("red");
-                            
-                        //}
-                    }
-                }
                 <td>{capacity}</td>
                 <td> <input type = "checkbox" /> </td>
                 <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
@@ -173,6 +171,10 @@ class MainPage extends Component {
                 const d = this.state.jsonList[i].date;
                 const cn = this.state.jsonList[i].system.companyName;
                 var cp = Math.round(this.state.jsonList[i].capacity.total.freePct * 100) / 100;
+                cp = "" + cp;
+                if(cp < 30.0) {
+                    cp = this.makeRed(cp);
+                }
                 const obj = this.state.jsonList[i];
                 var dat = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 
