@@ -7,11 +7,15 @@ class MainPage extends Component {
     state = {
         jsonList: [],
         jsonListItems: [],
-        page: 0,
-        total: 0
+        page: 0
     }
     constructor(props) {
         super(props);
+        this.state = {
+            jsonList: [],
+            jsonListItems: [],
+            page: 0
+        }
         this.toggleAll = this.toggleAll.bind(this);
     }
 
@@ -34,8 +38,8 @@ class MainPage extends Component {
         .then(res => {
             console.log('onSearchCLick Axios call Success');
             const jl = res.data;
-            this.setState({ jsonList: jl, total: res.data.total });
-            console.log(this.state.total)
+            const jli = res.data.items;
+            this.setState({ jsonList: jl, jsonListItems: jli});
         })
         .catch(error => {
             console.log('onSearchCLick Axios call failed');
@@ -53,7 +57,7 @@ class MainPage extends Component {
             console.log('Axios call Success');
             const jl = res.data;
             const jli = res.data.items;
-            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems: jli});
             console.log(this.state.page)
         })
         .catch(error => {
@@ -73,7 +77,7 @@ class MainPage extends Component {
             console.log('Axios call Success');
             const jl = res.data;
             const jli = res.data.items;
-            this.setState({ jsonList: jl, jsonListItems:jli, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems:jli});
             console.log(this.state.page)
         })
         .catch(error => {
@@ -98,7 +102,7 @@ class MainPage extends Component {
     var allSelected = document.getElementsByTagName("input");
     for(var i = 0,max = allSelected.length;i<max;i++){
         if(allSelected[i].type === 'checkbox' && allSelected[i].checked ===true)
-            allSelected[i].parentElement.parentElement.childNodes[4].childNodes[0].click()
+            allSelected[i].parentElement.parentElement.childNodes[5].childNodes[0].click()
     }
 }
     //Executes the axios command which fetches 50 systems and places it into jsonList
@@ -108,7 +112,7 @@ class MainPage extends Component {
             const jl = res.data;
             const jli = res.data.items;
             console.log(this.state.page)
-            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems: jli, total: 4998});
             console.log('Axios call Success')
           })
           .catch(error => {
@@ -193,7 +197,7 @@ class MainPage extends Component {
 
             <hr/>
 
-            <h5 class="ml-2">{(this.state.page * 20) + 1}-{(Math.floor(this.state.total / 20) === this.state.page) ? this.state.total : this.state.page * 20 + 20} of {this.state.total}</h5>
+            {/* <h5 class="ml-2">{(this.state.page * 20) + 1}-{(Math.floor(this.state.total / 20) === this.state.page) ? this.state.total : this.state.page * 20 + 20} of {this.state.total}</h5> */}
 
             <SearchBar 
                 selectAll={this.selectAll} 
@@ -216,9 +220,9 @@ class MainPage extends Component {
 
             <div class = "bottomIcon" align = "center">
                 <ul class="pages">
-                    {(this.state.page > 0) ? <a href="#" class="m-2" onClick={this.pageBack.bind(this)}>Prev.</a> : null }
-                    <b class="m-2">{this.state.page + 1}</b>
-                    {(this.state.page < this.state.total/20 - 1) ? <a href="#" class="m-2" onClick={this.pageForward.bind(this)}>Next</a> : null }
+                    <a href="#" class="m-2" onClick={this.pageBack.bind(this)}>Prev</a>
+                    {/* <b class="m-2">{this.state.page + 1}</b> */}
+                    <a href="#" class="m-2" onClick={this.pageForward.bind(this)}>Next</a>
                 </ul>
             </div>
             
