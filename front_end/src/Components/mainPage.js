@@ -36,7 +36,7 @@ class MainPage extends Component {
         axios.get(url)
         .then(res => {
             console.log('onSearchCLick Axios call Success');
-            const jl = res.data.items;
+            const jl = res.data;
             this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.total)
         })
@@ -49,12 +49,12 @@ class MainPage extends Component {
     pageForward() {
         console.log("Forward button clicked");
         let page = this.state.page + 1;
-        const url = process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber=" + page;
+        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber=" + page;
         this.setState({page: page})
         axios.get(url)
         .then(res => {
             console.log('Axios call Success');
-            const jl = res.data.items;
+            const jl = res.data;
             this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.page)
         })
@@ -67,7 +67,7 @@ class MainPage extends Component {
     pageBack() {
         console.log("Back button clicked");
         let page = this.state.page - (this.state.page > 0);
-        const url = process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber=" + page;
+        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber=" + page;
         this.setState({page: page})
 
         axios.get(url)
@@ -105,9 +105,9 @@ class MainPage extends Component {
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
-        axios.get(process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber="+this.state.page)
+        axios.get("http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber="+this.state.page)
           .then(res => {
-            const jl = res.data.items;
+            const jl = res.data;
             console.log(this.state.page)
             this.setState({ jsonList: jl, total: res.data.total });
             console.log('Axios call Success')
@@ -149,6 +149,14 @@ class MainPage extends Component {
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
                 <td>{companyName}</td>
+                {
+                    function makeCapRed() {
+                        //if(capacity < 30.0){
+                            capacity = capacity.fontcolor("red");
+                            
+                        //}
+                    }
+                }
                 <td>{capacity}</td>
                 <td> <input type = "checkbox" /> </td>
                 <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
@@ -164,7 +172,7 @@ class MainPage extends Component {
                 const sni = this.state.jsonList[i].serialNumberInserv;
                 const d = this.state.jsonList[i].date;
                 const cn = this.state.jsonList[i].system.companyName;
-                const cp = Math.round(this.state.jsonList[i].capacity.total.freePct * 100) / 100;
+                var cp = Math.round(this.state.jsonList[i].capacity.total.freePct * 100) / 100;
                 const obj = this.state.jsonList[i];
                 var dat = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 
