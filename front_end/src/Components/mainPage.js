@@ -14,6 +14,7 @@ class MainPage extends Component {
         super(props);
         this.state = {
             jsonList: [],
+            jsonListItems: [],
             page: 0
         }
         this.toggleAll = this.toggleAll.bind(this);
@@ -38,7 +39,8 @@ class MainPage extends Component {
         .then(res => {
             console.log('onSearchCLick Axios call Success');
             const jl = res.data;
-            this.setState({ jsonList: jl, total: res.data.total });
+            const jli = res.data.items;
+            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
             console.log(this.state.total)
         })
         .catch(error => {
@@ -102,7 +104,7 @@ class MainPage extends Component {
     var allSelected = document.getElementsByTagName("input");
     for(var i = 0,max = allSelected.length;i<max;i++){
         if(allSelected[i].type === 'checkbox' && allSelected[i].checked ===true)
-            allSelected[i].parentElement.parentElement.childNodes[4].childNodes[0].click()
+            allSelected[i].parentElement.parentElement.childNodes[5].childNodes[0].click()
     }
 }
     //Executes the axios command which fetches 50 systems and places it into jsonList
