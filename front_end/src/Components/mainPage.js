@@ -6,6 +6,7 @@ class MainPage extends Component {
     //Javascript functions go here:
     state = {
         jsonList: [],
+        jsonListItems: [],
         page: 0,
         total: 0
     }
@@ -26,7 +27,7 @@ class MainPage extends Component {
 
         this.setState({page: 0})
 
-        var url = process.env.REACT_APP_API_URL;
+        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/";
         if(searchOptionValue === "all") url += "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
         else if(searchOptionValue === "tenant") url += "tenants?tenants=" + searchInputValue;
         else url += "serial?num=" + searchInputValue;
@@ -55,7 +56,8 @@ class MainPage extends Component {
         .then(res => {
             console.log('Axios call Success');
             const jl = res.data;
-            this.setState({ jsonList: jl, total: res.data.total });
+            const jli = res.data.items;
+            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
             console.log(this.state.page)
         })
         .catch(error => {
@@ -73,8 +75,9 @@ class MainPage extends Component {
         axios.get(url)
         .then(res => {
             console.log('Axios call Success');
-            const jl = res.data.items;
-            this.setState({ jsonList: jl, total: res.data.total });
+            const jl = res.data;
+            const jli = res.data.items;
+            this.setState({ jsonList: jl, jsonListItems:jli, total: res.data.total });
             console.log(this.state.page)
         })
         .catch(error => {
@@ -107,30 +110,23 @@ class MainPage extends Component {
         axios.get("http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber="+this.state.page)
           .then(res => {
             const jl = res.data;
+            const jli = res.data.items;
             console.log(this.state.page)
-            this.setState({ jsonList: jl, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
             console.log('Axios call Success')
           })
           .catch(error => {
             console.log('Axios call failed');
           })
       }
-<<<<<<< HEAD
-      
-=======
 
-    //   checkIfChecked() {
-    //     document.getElementById("select-all")
-        
-    //   }
-
+    //Sets capacity to red
     makeRed(capacity) {
         return (
             <font color = "red">{capacity}</font>
         )
     }
 
->>>>>>> cb6f63d22b15d74ae9c428ae3b7ac6e82b3bd51e
     render() {
         //Headers for the main display table
         const headers = [
