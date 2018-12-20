@@ -115,7 +115,22 @@ class MainPage extends Component {
             console.log('Axios call failed');
           })
       }
+<<<<<<< HEAD
       
+=======
+
+    //   checkIfChecked() {
+    //     document.getElementById("select-all")
+        
+    //   }
+
+    makeRed(capacity) {
+        return (
+            <font color = "red">{capacity}</font>
+        )
+    }
+
+>>>>>>> cb6f63d22b15d74ae9c428ae3b7ac6e82b3bd51e
     render() {
         //Headers for the main display table
         const headers = [
@@ -159,6 +174,10 @@ class MainPage extends Component {
                 const d = this.state.jsonList[i].date;
                 const cn = this.state.jsonList[i].system.companyName;
                 var cp = Math.round(this.state.jsonList[i].capacity.total.freePct * 100) / 100;
+                cp = "" + cp;
+                if(cp < 30.0) {
+                    cp = this.makeRed(cp);
+                }
                 const obj = this.state.jsonList[i];
                 var dat = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 
