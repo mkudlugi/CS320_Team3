@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import return_selected from './mainPage.js'
 
-
 class SearchBar extends Component {
     //Javascript functions go here:
-
-
 
     render() {
         return (

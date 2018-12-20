@@ -7,8 +7,7 @@ class MainPage extends Component {
     state = {
         jsonList: [],
         jsonListItems: [],
-        page: 0,
-        total: 0
+        page: 0
     }
     constructor(props) {
         super(props);
@@ -40,8 +39,7 @@ class MainPage extends Component {
             console.log('onSearchCLick Axios call Success');
             const jl = res.data;
             const jli = res.data.items;
-            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
-            console.log(this.state.total)
+            this.setState({ jsonList: jl, jsonListItems: jli});
         })
         .catch(error => {
             console.log('onSearchCLick Axios call failed');
@@ -59,7 +57,7 @@ class MainPage extends Component {
             console.log('Axios call Success');
             const jl = res.data;
             const jli = res.data.items;
-            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems: jli});
             console.log(this.state.page)
         })
         .catch(error => {
@@ -79,7 +77,7 @@ class MainPage extends Component {
             console.log('Axios call Success');
             const jl = res.data;
             const jli = res.data.items;
-            this.setState({ jsonList: jl, jsonListItems:jli, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems:jli});
             console.log(this.state.page)
         })
         .catch(error => {
@@ -114,7 +112,7 @@ class MainPage extends Component {
             const jl = res.data;
             const jli = res.data.items;
             console.log(this.state.page)
-            this.setState({ jsonList: jl, jsonListItems: jli, total: res.data.total });
+            this.setState({ jsonList: jl, jsonListItems: jli, total: 4998});
             console.log('Axios call Success')
           })
           .catch(error => {
@@ -202,7 +200,7 @@ class MainPage extends Component {
 
             <hr/>
 
-            <h5 class="ml-2">{(this.state.page * 20) + 1}-{(Math.floor(this.state.total / 20) === this.state.page) ? this.state.total : this.state.page * 20 + 20} of {this.state.total}</h5>
+            {/* <h5 class="ml-2">{(this.state.page * 20) + 1}-{(Math.floor(this.state.total / 20) === this.state.page) ? this.state.total : this.state.page * 20 + 20} of {this.state.total}</h5> */}
 
             <SearchBar 
                 selectAll={this.selectAll} 
@@ -225,9 +223,9 @@ class MainPage extends Component {
 
             <div class = "bottomIcon" align = "center">
                 <ul class="pages">
-                    {(this.state.page > 0) ? <a href="#" class="m-2" onClick={this.pageBack.bind(this)}>Prev.</a> : null }
-                    <b class="m-2">{this.state.page + 1}</b>
-                    {(this.state.page < this.state.total/20 - 1) ? <a href="#" class="m-2" onClick={this.pageForward.bind(this)}>Next</a> : null }
+                    <a href="#" class="m-2" onClick={this.pageBack.bind(this)}>Prev</a>
+                    {/* <b class="m-2">{this.state.page + 1}</b> */}
+                    <a href="#" class="m-2" onClick={this.pageForward.bind(this)}>Next</a>
                 </ul>
             </div>
             
