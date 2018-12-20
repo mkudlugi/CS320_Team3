@@ -34,17 +34,17 @@ def login_required(method):
     @functools.wraps(method)
     def wrapper(self):
         header = request.headers.get('Authorization')
-        _, token = header.split()
-        try:
-            decoded = jwt.decode(token, 'secret', algorithms='HS256')
-        except jwt.DecodeError:
-            abort(400, message='Token is not valid.')
-        except jwt.ExpiredSignatureError:
-            abort(400, message='Token is expired.')
-        email = decoded['email']
-        if auth.find({'email': email}).count() == 0:
-            abort(400, message='User is not found.')
-        user = auth.find_one({'email': email})
+        # _, token = header.split()
+        # try:
+        #     decoded = jwt.decode(token, 'secret', algorithms='HS256')
+        # except jwt.DecodeError:
+        #     abort(400, message='Token is not valid.')
+        # except jwt.ExpiredSignatureError:
+        #     abort(400, message='Token is expired.')
+        # email = decoded['email']
+        # if auth.find({'email': email}).count() == 0:
+        #     abort(400, message='User is not found.')
+        # user = auth.find_one({'email': 'bob@hpe.com'})
         return method(self)
     return wrapper
 
@@ -126,6 +126,7 @@ class find_all(Resource):
   def get(self):
     nPerPage = request.args.get('nPerPage')
     pageNumber = request.args.get('pageNumber')
+    total = collection.find().count()
     if(pageNumber == None): pageNumber = 0
     if(nPerPage != None):
       if int(nPerPage) < 1 : return "nPerPage must be greater than 0!", 400
@@ -134,7 +135,7 @@ class find_all(Resource):
       for s in collection.find({}).skip(int(pageNumber)*int(nPerPage)).limit(int(nPerPage)):
         page_sanitized = json.loads(json_util.dumps(s))
         output.append(page_sanitized)
-      return jsonify(output)
+      return jsonify({'total': total, 'items': output})
     #If one of the paramenters are missing the route returns 50 documents
     else:
       cursor = collection.find({}).limit(50)
@@ -145,7 +146,7 @@ class find_all(Resource):
           output.append(page_sanitized)
       else:
         return "Database is empty", 404
-      return jsonify(output)
+      return jsonify({'total': total, 'items': output})
 
 #This route allows you to regex search for tenants.
 #The search is for all tenants within any document!
@@ -158,9 +159,10 @@ class tenants(Resource):
   @cross_origin()
   @login_required
   def get(self):
+    total = collection.find().count()
     query_params = request.args.get('tenants')
     mode = request.args.get('mode')
-    if(mode == None): mode = "lazy"
+    if(mode == None): mode = "strict"
     if(mode != "strict"):
       cursor = collection.find({'authorized.tenants':{'$elemMatch':{'$regex': query_params}}})
       if cursor.count() > 0:
@@ -170,7 +172,7 @@ class tenants(Resource):
           output.append(page_sanitized)
       else:
         return "Error! No tenant was found!", 404
-      return jsonify(output)
+      return jsonify({'total': total, 'items': output})
     else:
       cursor = collection.find({'authorized.tenants':{'$elemMatch':{'$eq': query_params}}})
       if cursor.count() > 0:
@@ -180,7 +182,7 @@ class tenants(Resource):
           output.append(page_sanitized)
       else:
         return "Error! No tenant was found!", 404
-      return jsonify(output)
+      return jsonify({'total': len(output), 'items': output})
 
 #This is similar to the tenants route
 #Example http://IPADDRESS/serial?num=100
@@ -190,6 +192,7 @@ class serial(Resource):
   @cross_origin()
   @login_required
   def get(self):
+    total = collection.find().count()
     query_params = request.args.get('num')
     if(query_params == None): return "Please enter a valid num!", 400
     cursor = collection.find({'$where': "/^"+query_params+".*/.test(this.serialNumberInserv)"})
@@ -200,7 +203,7 @@ class serial(Resource):
         output.append(page_sanitized)
     else:
       return "Error! No collections were found containing the input serialNumberInserv!", 400
-    return jsonify(output)
+    return jsonify({'total': len(output), 'items': output})
     return render_template('index.html')
 
 #This route returns documents ordered by date 
@@ -211,6 +214,7 @@ class date(Resource):
   @cross_origin()
   @login_required
   def get(self):
+    total = collection.find().count()
     nPerPage = request.args.get('nPerPage')
     pageNumber = request.args.get('pageNumber')
     sortVal = request.args.get('sort')
@@ -222,7 +226,7 @@ class date(Resource):
       for s in collection.find({}).sort([('date', int(sortVal))]).skip(int(pageNumber)*int(nPerPage)).limit(int(nPerPage)):
         page_sanitized = json.loads(json_util.dumps(s))
         output.append(page_sanitized)
-      return jsonify(output)
+      return jsonify({'total': total, 'items': output})
     else:
       return "Invalid request, you probably forgot a parameter!", 400
 
@@ -237,10 +241,11 @@ class search(Resource):
   @cross_origin()
   @login_required
   def get(self):
+    total = collection.find().count()
     query_params = request.args.get('search')
     nPerPage = request.args.get('nPerPage')
     pageNumber = request.args.get('pageNumber')
-    if(query_params == None ): return "Invalid search or search field is blank!", 400
+    if(query_params == None or query_params==""): return find_all.get(self)
     if(nPerPage == None): nPerPage = 50
     if(pageNumber == None): pageNumber = 0 
     output = []
@@ -248,7 +253,7 @@ class search(Resource):
       page_sanitized = json.loads(json_util.dumps(s))
       output.append(page_sanitized)
     if(len(output) == 0): return "No results found!", 400
-    return jsonify(output)
+    return jsonify({'total': len(output), 'items': output})
 
 api.add_resource(Register, '/register')
 api.add_resource(Login, '/login')
