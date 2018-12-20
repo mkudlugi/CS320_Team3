@@ -26,7 +26,7 @@ class MainPage extends Component {
 
         this.setState({page: 0})
 
-        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/";
+        var url = process.env.REACT_APP_API_URL;
         if(searchOptionValue === "all") url += "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
         else if(searchOptionValue === "tenant") url += "tenants?tenants=" + searchInputValue;
         else url += "serial?num=" + searchInputValue;
@@ -36,7 +36,7 @@ class MainPage extends Component {
         axios.get(url)
         .then(res => {
             console.log('onSearchCLick Axios call Success');
-            const jl = res.data;
+            const jl = res.data.items;
             this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.total)
         })
@@ -49,12 +49,12 @@ class MainPage extends Component {
     pageForward() {
         console.log("Forward button clicked");
         let page = this.state.page + 1;
-        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber=" + page;
+        const url = process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber=" + page;
         this.setState({page: page})
         axios.get(url)
         .then(res => {
             console.log('Axios call Success');
-            const jl = res.data;
+            const jl = res.data.items;
             this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.page)
         })
@@ -67,13 +67,13 @@ class MainPage extends Component {
     pageBack() {
         console.log("Back button clicked");
         let page = this.state.page - (this.state.page > 0);
-        const url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "all?nPerPage=20&pageNumber=" + page;
+        const url = process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber=" + page;
         this.setState({page: page})
 
         axios.get(url)
         .then(res => {
             console.log('Axios call Success');
-            const jl = res.data;
+            const jl = res.data.items;
             this.setState({ jsonList: jl, total: res.data.total });
             console.log(this.state.page)
         })
@@ -105,9 +105,10 @@ class MainPage extends Component {
 
     //Executes the axios command which fetches 50 systems and places it into jsonList
     componentDidMount() {
-        axios.get("http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/all?nPerPage=20&pageNumber=" + (this.state.page))
+        axios.get(process.env.REACT_APP_API_URL + "all?nPerPage=20&pageNumber="+this.state.page)
           .then(res => {
-            const jl = res.data;
+            const jl = res.data.items;
+            console.log(this.state.page)
             this.setState({ jsonList: jl, total: res.data.total });
             console.log('Axios call Success')
           })
