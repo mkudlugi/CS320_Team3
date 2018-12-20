@@ -12,10 +12,6 @@ class MainPage extends Component {
     }
     constructor(props) {
         super(props);
-        this.state = {
-            jsonList: [],
-            page: 0
-        }
         this.toggleAll = this.toggleAll.bind(this);
     }
 
@@ -135,8 +131,7 @@ class MainPage extends Component {
             'Company Name',
             'Free Space (%)',
             'Select',
-            'Download',
-            'Show More'
+            'Download'
         ];
 
         const HeaderRow = () => (
@@ -158,7 +153,6 @@ class MainPage extends Component {
                 <td>{capacity}</td>
                 <td> <input type = "checkbox" /> </td>
                 <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png"/></a></td>
-                <td><a href="url"><img src="plus.png" height="25" width="25"/></a></td>
             </tr>
         );
 
@@ -168,7 +162,6 @@ class MainPage extends Component {
 
             for (let i = 0; i < this.state.jsonList.length; i++) {
                 //Parses JSON object for corresponding data
-                const sys = this.state.jsonList[i];
                 const sni = this.state.jsonList[i].serialNumberInserv;
                 const d = this.state.jsonList[i].date;
                 const cn = this.state.jsonList[i].system.companyName;
