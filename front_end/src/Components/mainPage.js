@@ -17,20 +17,16 @@ class MainPage extends Component {
             page: 0
         }
         this.toggleAll = this.toggleAll.bind(this);
+        this.onSearchClick = this.onSearchClick.bind(this);
     }
 
     onSearchClick(){
-        const searchOptionValue = document.getElementById("navbarDropdown").value;
-        console.log(searchOptionValue);
         const searchInputValue = document.getElementById("searchInput").value;
         console.log(searchInputValue);
 
         this.setState({page: 0})
 
-        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/";
-        if(searchOptionValue === "all") url += "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
-        else if(searchOptionValue === "tenant") url += "tenants?tenants=" + searchInputValue;
-        else url += "serial?num=" + searchInputValue;
+        var url = "http://filemasterxp-env.7hpy2sty52.us-east-1.elasticbeanstalk.com/" + "search?nPerPage=20&pageNumber=0&search=" + searchInputValue;
 
         console.log(url);
 
@@ -40,9 +36,11 @@ class MainPage extends Component {
             const jl = res.data;
             const jli = res.data.items;
             this.setState({ jsonList: jl, jsonListItems: jli});
+            console.log(this.state.jsonList);
         })
         .catch(error => {
             console.log('onSearchCLick Axios call failed');
+            this.setState({ jsonList: [], jsonListItems: []});
         }) 
     }
 
@@ -62,6 +60,7 @@ class MainPage extends Component {
         })
         .catch(error => {
             console.log('Axios call failed');
+            this.setState({ jsonList: [], jsonListItems: []});
         }) 
     }
 
@@ -112,11 +111,12 @@ class MainPage extends Component {
             const jl = res.data;
             const jli = res.data.items;
             console.log(this.state.page)
-            this.setState({ jsonList: jl, jsonListItems: jli, total: 4998});
+            this.setState({ jsonList: jl, jsonListItems: jli});
             console.log('Axios call Success')
           })
           .catch(error => {
             console.log('Axios call failed');
+            this.setState({ jsonList: [], jsonListItems: []});
           })
       }
 
@@ -189,9 +189,6 @@ class MainPage extends Component {
             <div class="row align-items-center h-100">
                 <div class="col-md-8">
                     <h2>File_MasterXP</h2>
-                </div>
-                <div class="col-md-4">
-                    <button class="btn btn-secondary float-right">Log Out</button>
                 </div>
             </div>
 
