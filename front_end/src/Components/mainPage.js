@@ -135,7 +135,8 @@ class MainPage extends Component {
             'Company Name',
             'Free Space (%)',
             'Select',
-            'Download'
+            'Download',
+            'Show More'
         ];
 
         const HeaderRow = () => (
@@ -156,7 +157,8 @@ class MainPage extends Component {
                 <td>{companyName}</td>
                 <td>{capacity}</td>
                 <td> <input type = "checkbox" /> </td>
-                <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
+                <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png"/></a></td>
+                <td><a href="url"><img src="plus.png" height="25" width="25"/></a></td>
             </tr>
         );
 
@@ -166,6 +168,7 @@ class MainPage extends Component {
 
             for (let i = 0; i < this.state.jsonList.length; i++) {
                 //Parses JSON object for corresponding data
+                const sys = this.state.jsonList[i];
                 const sni = this.state.jsonList[i].serialNumberInserv;
                 const d = this.state.jsonList[i].date;
                 const cn = this.state.jsonList[i].system.companyName;
