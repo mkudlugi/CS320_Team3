@@ -181,9 +181,10 @@ unselectAll(e) {
     render() {
         //Headers for the main display table
         const headers = [
-            'serialNumberInserv',
-            'Date(YYYY-MM-DDTHH:mm:ssZ)',
-            'authorized tenants',
+            'Serial Number',
+            'Date',
+            'Company Name',
+            'Free Space (%)',
             'Select',
             'Download'
         ];
@@ -199,11 +200,12 @@ unselectAll(e) {
         );
         
         //Component that defines what each row of the table displays
-        const Row = ({serialNumberInserv, date, authorizedTenants, data}) => (
+        const Row = ({serialNumberInserv, date, companyName, capacity, data}) => (
             <tr>
                 <td>{serialNumberInserv}</td>
                 <td>{date}</td>
-                <td>{authorizedTenants}</td>
+                <td>{companyName}</td>
+                <td>{capacity}</td>
                 <td> <input type = "checkbox" /> </td>
                 <td><a href={data} download={serialNumberInserv+".json"}><img src="download icon.png" /></a></td>
             </tr>
@@ -217,12 +219,13 @@ unselectAll(e) {
                 //Parses JSON object for corresponding data
                 const sni = this.state.jsonList[i].serialNumberInserv;
                 const d = this.state.jsonList[i].date;
-                const at = this.state.jsonList[i].authorized.tenants;
+                const cn = this.state.jsonList[i].system.companyName;
+                const cp = Math.round(this.state.jsonList[i].capacity.total.freePct * 100) / 100;
                 const obj = this.state.jsonList[i];
                 var dat = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 
                 //Defines a row with the info from the current json object and adds it to the list of rows
-                rows.push(<Row serialNumberInserv={sni} date={d} authorizedTenants={at} data={dat}/>);
+                rows.push(<Row serialNumberInserv={sni} date={d} companyName={cn} capacity={cp} data={dat}/>);
             }
             return rows;
         };
